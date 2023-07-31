@@ -9,14 +9,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '17'
-      - name: Install dependencies
+      - name: Install Ardrive
         run: |
          npm install -g ardrive-cli
+         ardrive --help
       - name: Build the static website
         run: |
          cd static-website
          npm install
          npm run build
-      - run: ardrive --help
-      - run: ls
-      - run: pwd
+         ls
