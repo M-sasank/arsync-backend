@@ -1,13 +1,22 @@
-name: learn-github-actions
-run-name: ${{ github.actor }} is learning GitHub Actions
+name: Build the static Website
+run-name: ${{ github.actor }} is building and pushing into ardrive
 on: [push]
 jobs:
-  check-bats-version:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '17'
-      - run: npm install -g ardrive-cli
+      - name: Install dependencies
+        run: |
+         npm install -g ardrive-cli
+      - name: Build the static website
+        run: |
+         cd static-website
+         npm install
+         npm run build
       - run: ardrive --help
+      - run: ls
+      - run: pwd
