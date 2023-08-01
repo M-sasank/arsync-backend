@@ -11,9 +11,10 @@ jobs:
           node-version: '17'
       - name: Install Ardrive
         run: |
-          npm install -g ardrive-cli
-          npm update -g ardrive-cli
-          ardrive get-address -s "$PASSPHRASE" &> /dev/null
+          npm install -g ardrive-cli --silent
+          npm update -g ardrive-cli --silent
+          echo "Latest Ardrive installed"
+          ardrive get-address -s "$PASSPHRASE"
           ardrive get-balance -a "$DRIVEID"
       - name: Build the static website
         run: |
