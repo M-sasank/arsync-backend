@@ -1,0 +1,25 @@
+name: Build the static Website
+run-name: ${{ github.actor }} is building and pushing into ardrive
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '17'
+      - name: Install Ardrive
+        run: |
+          npm install -g ardrive-cli --silent
+          npm update -g ardrive-cli --silent
+          echo "Latest Ardrive installed"
+          ardrive get-address -s "$passphrase"
+          ardrive get-balance -a "$driveid"
+      - name: Build the static website
+        run: |
+         cd static-website
+         npm install --silent
+         npm run build --silent
+         ls
+         echo "Build complete"
