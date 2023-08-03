@@ -14,8 +14,8 @@ jobs:
           npm install -g ardrive-cli --silent
           npm update -g ardrive-cli --silent
           echo "Latest Ardrive installed"
-          ardrive get-address -s "$PASSPHRASE"
-          ardrive get-balance -a "$DRIVEID"
+          ardrive get-address -s "$passphrase"
+          ardrive get-balance -a "$driveid"
       - name: Build the static website
         run: |
          cd static-website
