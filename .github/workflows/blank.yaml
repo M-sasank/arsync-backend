@@ -1,4 +1,4 @@
-name: Test for create new file
+name: Test for update new file
 on: [push]
 jobs:
   build:
