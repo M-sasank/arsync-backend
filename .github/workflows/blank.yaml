@@ -1,11 +1,10 @@
-name: Build the static Website
-run-name: ${{ github.actor }} is building and pushing into ardrive
+name: Test for create new file
 on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Echo Ardrive
+      - name: Install Ardrive
         run: |
           echo "Latest Ardrive installed"
