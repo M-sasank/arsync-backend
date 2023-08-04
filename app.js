@@ -8,6 +8,83 @@ const octokit = new Octokit({
     auth: accessToken,
 });
 
+
+async function getTags(user, repository) {
+    const result = await octokit.request('GET /repos/{owner}/{repo}/tags', {
+        owner: user,
+        repo: repository,
+        headers: {
+            authorization: `token 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`,
+        }
+    })
+    console.log(result["data"]);
+    return result["data"];
+}
+
+async function addTags(user, repository) {
+    const commit_sha = await getLatestCommit(user, repository);
+    console.log(commit_sha);
+    await octokit.request('POST /repos/{owner}/{repo}/git/tags', {
+        owner: user,
+        repo: repository,
+        tag: 'arsync',
+        message: 'arsync message',
+        object: commit_sha,
+        type: 'commit',
+        headers: {
+            authorization: `token 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`,
+        }
+    })
+    console.log("Tag added successfully!");
+}
+
+async function addRepoTopic(user, repository) {
+    await octokit.request('PUT /repos/{owner}/{repo}/topics', {
+        owner: user,
+        repo: repository,
+        names: [
+            'arsync'
+        ],
+        headers: {
+            authorization: `token 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`,
+        }
+    })
+}
+async function getRepositories(user) {
+    const result = await octokit.request('GET /users/{username}/repos', {
+        username: user,
+        headers: {
+            authorization: `token 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`,
+        }
+    })
+    var repo = [];
+    for (let i = 0; i < result["data"].length; i++) {
+        // const tags = await getTags(user, result["data"][i]["name"])
+        if (result["data"][i]["topics"][0] == "arsync") {
+            var repoJSON = {
+                "name": result["data"][i]["name"],
+                "updated_at": result["data"][i]["updated_at"],
+            }
+            // console.log(tags);
+            repo.push(repoJSON);
+            // console.log(result["data"][i]["name"]);
+        };
+
+    }
+    return repo;
+}
+
+async function getLatestCommit(user, repository) {
+    const commitList = await octokit.request('GET /repos/{owner}/{repo}/commits', {
+        owner: user,
+        repo: repository,
+        headers: {
+            authorization: `token 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`,
+        }
+    })
+    // console.log(commitList["data"][0]["sha"]);
+    return commitList["data"][0]["sha"];
+}
 async function createOrUpdateWorkflow(user, repository, filePath) {
     try {
         // Checking for file
@@ -17,20 +94,25 @@ async function createOrUpdateWorkflow(user, repository, filePath) {
             path: filePath,
         })
 
+        //updating file if exists
         await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
             owner: user,
             repo: repository,
             path: filePath,
             message: 'updated workflow',
             committer: {
-                name: 'Sasank Madati',
-                email: 'sasankmadati@gmail.com'
+                name: 'Team Last Minute',
+                email: 'lastmin@gmail.com'
+            },
+            headers: {
+                authorization: `token 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`,
             },
             content: 'bmFtZTogVGVzdCBmb3IgdXBkYXRlIG5ldyBmaWxlCm9uOiBbcHVzaF0Kam9iczoKICBidWlsZDoKICAgIHJ1bnMtb246IHVidW50dS1sYXRlc3QKICAgIHN0ZXBzOgogICAgICAtIHVzZXM6IGFjdGlvbnMvY2hlY2tvdXRAdjMKICAgICAgLSBuYW1lOiBJbnN0YWxsIEFyZHJpdmUKICAgICAgICBydW46IHwKICAgICAgICAgIGVjaG8gIkxhdGVzdCBBcmRyaXZlIGluc3RhbGxlZCI=',
             sha: existingFile.sha,
         })
         console.log(`File is updated successfully!`);
     }
+    //if file doesn't exist
     catch (error) {
         console.log(`File not found! Created a new file.`);
         await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
@@ -39,20 +121,36 @@ async function createOrUpdateWorkflow(user, repository, filePath) {
             path: filePath,
             message: 'hey there',
             committer: {
-                name: 'Sasank Madati',
-                email: 'sasankmadati@gmail.com'
+                name: 'Team Last Minute',
+                email: 'lastmin@gmail.com'
             },
-            content: 'bmFtZTogQnVpbGQgdGhlIHN0YXRpYyBXZWJzaXRlCnJ1bi1uYW1lOiAke3sgZ2l0aHViLmFjdG9yIH19IGlzIGJ1aWxkaW5nIGFuZCBwdXNoaW5nIGludG8gYXJkcml2ZQpvbjogW3B1c2hdCmpvYnM6CiAgYnVpbGQ6CiAgICBydW5zLW9uOiB1YnVudHUtbGF0ZXN0CiAgICBzdGVwczoKICAgICAgLSB1c2VzOiBhY3Rpb25zL2NoZWNrb3V0QHYzCiAgICAgIC0gdXNlczogYWN0aW9ucy9zZXR1cC1ub2RlQHYzCiAgICAgICAgd2l0aDoKICAgICAgICAgIG5vZGUtdmVyc2lvbjogJzE3JwogICAgICAtIG5hbWU6IEluc3RhbGwgQXJkcml2ZQogICAgICAgIHJ1bjogfAogICAgICAgICAgZWNobyAiTGF0ZXN0IEFyZHJpdmUgaW5zdGFsbGVkIg==',
+            content: 'bmFtZTogVGVzdCBmb3IgY3JlYXRlIG5ldyBmaWxlCm9uOiBbcHVzaF0Kam9iczoKICBidWlsZDoKICAgIHJ1bnMtb246IHVidW50dS1sYXRlc3QKICAgIHN0ZXBzOgogICAgICAtIHVzZXM6IGFjdGlvbnMvY2hlY2tvdXRAdjMKICAgICAgLSBuYW1lOiBJbnN0YWxsIEFyZHJpdmUKICAgICAgICBydW46IHwKICAgICAgICAgIGVjaG8gIkxhdGVzdCBBcmRyaXZlIGluc3RhbGxlZCI='
+            , headers: {
+                authorization: `token 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`,
+            }
         })
     }
+    // addTags(user, repository);
+    addRepoTopic(user, repository);
+
 }
 
 app.get('/addWorkflow', (req, res) => {
+    // user = "M-sasank";
+    // repository = 'arweave-hackathon';
+    // filePath = '.github/workflows/blank.yaml';
+    // createOrUpdateWorkflow(user, repository, filePath);
+
+    res.send("Hello World!");
+});
+
+app.get('/', async (req, res) => {
     user = "M-sasank";
     repository = 'arweave-hackathon';
-    filePath = '.github/workflows/blank.yaml';
-    createOrUpdateWorkflow(user, repository, filePath);
-    res.send("Hello World!");
+    // const result = await getRepositories(user);
+    addRepoTopic(user, repository);
+    result = await getRepositories(user);
+    res.send(result);
 });
 
 // Start the server
