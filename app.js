@@ -18,13 +18,13 @@ async function getTags(user, repository) {
             authorization: accessToken,
         }
     })
-    console.log(result["data"]);
+    // console.log(result["data"]);
     return result["data"];
 }
 
 async function addTags(user, repository) {
     const commit_sha = await getLatestCommit(user, repository);
-    console.log(commit_sha);
+    // console.log(commit_sha);
     await octokit.request('POST /repos/{owner}/{repo}/git/tags', {
         owner: user,
         repo: repository,
@@ -120,7 +120,7 @@ async function createOrUpdateWorkflow(user, repository, filePath) {
             owner: user,
             repo: repository,
             path: filePath,
-            message: 'hey there',
+            message: 'Added workflow by arsync',
             committer: {
                 name: 'Team Last Minute',
                 email: 'lastmin@gmail.com'
