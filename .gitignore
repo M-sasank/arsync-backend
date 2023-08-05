@@ -1,5 +1,9 @@
 node_modules
 yaml.js
+commits.json
+arsyncRepos.json
 repos.json
 sample.json
 tags.json
+pipeline.drawio
+.env

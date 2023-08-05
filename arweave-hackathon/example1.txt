@@ -1,1 +1,0 @@
-name: Build the static Website
