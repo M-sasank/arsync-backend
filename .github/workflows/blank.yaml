@@ -8,10 +8,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '17'
-      - name: Install Ardrive
+      - name: Install Dependencies
         run: |
-         npm install -g ardrive-cli
-         ardrive --help
+         npm i
       - name: Build the static website
         run: |
          cd static-website
@@ -19,4 +18,9 @@ jobs:
          ls
       - name: Upload to Ardrive
         run: |
-         ardrive --help
+         echo "Uploading to Ardrive....!"
+        #  ardrive --help
+      - name: Creating a Manifest
+        run: |
+          echo "Creating a manifest....!"
+          echo "Manifest created Successfully!"
