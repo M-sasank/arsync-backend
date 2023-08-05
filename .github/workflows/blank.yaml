@@ -10,10 +10,11 @@ jobs:
           node-version: '17'
       - name: Install Dependencies
         run: |
-         npm i
+         echo "Installing Dependencies....!"
       - name: Build the static website
         run: |
          cd static-website
+         npm install
          npm run build
          ls
       - name: Upload to Ardrive
