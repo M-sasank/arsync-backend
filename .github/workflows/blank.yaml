@@ -11,6 +11,7 @@ jobs:
           npm install ardrive-cli
       - name: Build
         run: | 
+          cd static-website
           npm run build
       - name: Upload to Arweave
         run: |
