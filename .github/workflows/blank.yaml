@@ -1,20 +1,20 @@
-name: Test for update new file
+name: Ardrive Workflow
 on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install dependencies
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '17'
+      - name: Install Ardrive
         run: |
-          npm install
-          npm install ardrive-cli
-      - name: Build
-        run: | 
-          cd static-website
-          npm run build
-      - name: Upload to Arweave
+         npm install -g ardrive-cli
+         ardrive --help
+      - name: Build the static website
         run: |
-          cd build
-          ls
-          ardrive --help
+         cd static-website
+         npm install
+         npm run build
+         ls
