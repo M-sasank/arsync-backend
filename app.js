@@ -4,6 +4,7 @@ const { Octokit } = require("@octokit/rest");
 const app = express();
 
 const accessToken = process.env.GITHUB_TOKEN;
+// console.log(accessToken);
 const octokit = new Octokit({
     auth: accessToken,
 });
@@ -14,7 +15,7 @@ async function getTags(user, repository) {
         owner: user,
         repo: repository,
         headers: {
-            authorization: `token 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`,
+            authorization: accessToken,
         }
     })
     console.log(result["data"]);
@@ -32,7 +33,7 @@ async function addTags(user, repository) {
         object: commit_sha,
         type: 'commit',
         headers: {
-            authorization: `token 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`,
+            authorization: accessToken,
         }
     })
     console.log("Tag added successfully!");
@@ -46,7 +47,7 @@ async function addRepoTopic(user, repository) {
             'arsync'
         ],
         headers: {
-            authorization: `token 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`,
+            'X-GitHub-Api-Version': '2022-11-28'
         }
     })
 }
@@ -54,7 +55,7 @@ async function getRepositories(user) {
     const result = await octokit.request('GET /users/{username}/repos', {
         username: user,
         headers: {
-            authorization: `token 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`,
+            authorization: accessToken,
         }
     })
     var repo = [];
@@ -79,7 +80,7 @@ async function getLatestCommit(user, repository) {
         owner: user,
         repo: repository,
         headers: {
-            authorization: `token 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`,
+            authorization: accessToken,
         }
     })
     // console.log(commitList["data"][0]["sha"]);
@@ -105,7 +106,7 @@ async function createOrUpdateWorkflow(user, repository, filePath) {
                 email: 'lastmin@gmail.com'
             },
             headers: {
-                authorization: `token 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`,
+                authorization: accessToken,
             },
             content: 'bmFtZTogVGVzdCBmb3IgdXBkYXRlIG5ldyBmaWxlCm9uOiBbcHVzaF0Kam9iczoKICBidWlsZDoKICAgIHJ1bnMtb246IHVidW50dS1sYXRlc3QKICAgIHN0ZXBzOgogICAgICAtIHVzZXM6IGFjdGlvbnMvY2hlY2tvdXRAdjMKICAgICAgLSBuYW1lOiBJbnN0YWxsIEFyZHJpdmUKICAgICAgICBydW46IHwKICAgICAgICAgIGVjaG8gIkxhdGVzdCBBcmRyaXZlIGluc3RhbGxlZCI=',
             sha: existingFile.sha,
@@ -126,7 +127,7 @@ async function createOrUpdateWorkflow(user, repository, filePath) {
             },
             content: 'bmFtZTogVGVzdCBmb3IgY3JlYXRlIG5ldyBmaWxlCm9uOiBbcHVzaF0Kam9iczoKICBidWlsZDoKICAgIHJ1bnMtb246IHVidW50dS1sYXRlc3QKICAgIHN0ZXBzOgogICAgICAtIHVzZXM6IGFjdGlvbnMvY2hlY2tvdXRAdjMKICAgICAgLSBuYW1lOiBJbnN0YWxsIEFyZHJpdmUKICAgICAgICBydW46IHwKICAgICAgICAgIGVjaG8gIkxhdGVzdCBBcmRyaXZlIGluc3RhbGxlZCI='
             , headers: {
-                authorization: `token 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`,
+                authorization: accessToken,
             }
         })
     }

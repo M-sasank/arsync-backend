@@ -5,6 +5,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Ardrive
+      - name: Install dependencies
         run: |
-          echo "Latest Ardrive installed"
+          npm install
+          npm install ardrive-cli
+      - name: Build
+        run: npm run build
+      - name: Upload to Arweave
+        run: |
+          ardrive --help
