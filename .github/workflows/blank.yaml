@@ -24,7 +24,7 @@ jobs:
       - name: Upload to Ardrive
         run: |
          echo "Uploading to Ardrive....!"
-         echo "repository variable : $REPOSITORY_VAR"
+         echo "repository variable  ${{ vars.REPOSITORY_VAR }}""
         #  ardrive --help
       - name: Creating a Manifest
         run: |
